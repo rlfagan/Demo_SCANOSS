@@ -54,13 +54,14 @@ os.makedirs("charts", exist_ok=True)
 def save_and_encode_chart(filename, chart_func):
     chart_func()
     plt.tight_layout()
-    plt.savefig(filename)
+    plt.savefig(filename, dpi=100)  # Smaller DPI for smaller file size
     plt.close()
     with open(filename, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode("utf-8")
 
 # License Distribution Bar Chart
 def license_bar_chart():
+    plt.figure(figsize=(6, 4))  # Smaller chart size
     license_df["License"].value_counts().plot(kind="barh", color="skyblue")
     plt.title("License Distribution")
     plt.xlabel("Count")
@@ -70,13 +71,13 @@ license_base64 = save_and_encode_chart("charts/license_distribution.png", licens
 
 # Cryptographic Algorithm Usage Bar Chart
 def crypto_bar_chart():
+    plt.figure(figsize=(6, 4))  # Smaller chart size
     if not crypto_df.empty:
         crypto_df["Algorithm"].value_counts().plot(kind="barh", color="orange")
         plt.title("Cryptographic Algorithm Usage")
         plt.xlabel("Count")
         plt.ylabel("Algorithm")
     else:
-        plt.figure(figsize=(5, 5))
         plt.text(0.5, 0.5, "No cryptographic data available", ha="center", va="center", fontsize=12)
         plt.axis("off")
 
@@ -84,24 +85,17 @@ crypto_base64 = save_and_encode_chart("charts/crypto_usage.png", crypto_bar_char
 
 # Quality Scores Bar Chart
 def quality_bar_chart():
+    plt.figure(figsize=(6, 4))  # Smaller chart size
     if not quality_df.empty:
         quality_df["Quality Score"].value_counts().sort_index().plot(kind="bar", color="purple")
         plt.title("Quality Scores (Best Practices)")
         plt.xlabel("Score (out of 5)")
         plt.ylabel("Count")
     else:
-        plt.figure(figsize=(5, 5))
         plt.text(0.5, 0.5, "No quality scores available", ha="center", va="center", fontsize=12)
         plt.axis("off")
 
 quality_base64 = save_and_encode_chart("charts/quality_scores.png", quality_bar_chart)
-
-# Repository Health Table
-health_table_md = tabulate(health_df.drop_duplicates().head(10), headers="keys", tablefmt="github")
-
-# Copyrights Table
-copyrights_df = pd.DataFrame({"Copyrights": copyrights})
-copyrights_md = tabulate(copyrights_df.head(10), headers="keys", tablefmt="github")
 
 # Generate Markdown Summary
 with open("summary.md", "w") as f:
@@ -109,22 +103,31 @@ with open("summary.md", "w") as f:
 
     # License Distribution
     f.write("### License Distribution\n")
-    f.write(f"![License Distribution](data:image/png;base64,{license_base64})\n")
+    if len(license_base64) > 0:
+        f.write(f"![License Distribution](data:image/png;base64,{license_base64})\n")
+    else:
+        f.write("No License Distribution chart available.\n")
 
     # Cryptographic Algorithm Usage
     f.write("### Cryptographic Algorithm Usage\n")
-    f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_base64})\n")
+    if len(crypto_base64) > 0:
+        f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_base64})\n")
+    else:
+        f.write("No cryptographic data available.\n")
 
     # Quality Scores
     f.write("### Quality Scores (Best Practices)\n")
-    f.write(f"![Quality Scores](data:image/png;base64,{quality_base64})\n")
+    if len(quality_base64) > 0:
+        f.write(f"![Quality Scores](data:image/png;base64,{quality_base64})\n")
+    else:
+        f.write("No quality scores available.\n")
 
     # Repository Health Table
     f.write("### Repository Health Metrics\n")
-    f.write(health_table_md + "\n\n")
+    f.write(tabulate(health_df.drop_duplicates().head(10), headers="keys", tablefmt="github") + "\n\n")
 
     # Copyright Information
     f.write("### Sample Copyright Information\n")
-    f.write(copyrights_md + "\n")
+    f.write(tabulate(pd.DataFrame({"Copyrights": copyrights}).head(10), headers="keys", tablefmt="github") + "\n")
 
 print("Dashboard summary generated successfully.")
