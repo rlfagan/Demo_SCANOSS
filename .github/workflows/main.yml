@@ -1,4 +1,4 @@
-name: Example SCANOSS SBOM SCAN
+name: Example SCANOSS SBOM SCANNER
 
 on:
   pull_request:
