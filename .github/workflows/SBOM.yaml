@@ -50,7 +50,7 @@ jobs:
       - name: Generate Charts and Results Summary
         run: |
           mkdir -p charts
-          python scripts/generate_charts_with_summary.py
+          python scripts/generate_charts.py
 
       - name: Display Results and Charts in Workflow Summary
         run: cat summary.md >> $GITHUB_STEP_SUMMARY
