@@ -1,4 +1,4 @@
-name: SCANOSS SBOM
+name: SCANOSS SBOM SCANNER RONAN
 
 on:
   pull_request:
