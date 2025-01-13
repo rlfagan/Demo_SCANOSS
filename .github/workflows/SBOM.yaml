@@ -42,15 +42,15 @@ jobs:
           name: scanoss-results
           path: ./  # Download to root
 
-      - name: Debug Files
-        run: ls -la  # Check if results.json exists
-
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install matplotlib pandas
+          pip install matplotlib pandas tabulate
 
-      - name: Generate Charts
+      - name: Generate Charts and Results Summary
         run: |
           mkdir -p charts
-          python scripts/generate_charts.py
+          python scripts/generate_charts_with_summary.py
+
+      - name: Display Results and Charts in Workflow Summary
+        run: cat summary.md >> $GITHUB_STEP_SUMMARY
