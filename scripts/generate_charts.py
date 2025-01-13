@@ -12,118 +12,106 @@ with open("results.json", "r") as file:
 licenses = []
 components = []
 crypto_algorithms = []
+quality_scores = []
+repo_health = []
+copyrights = []
 
+# Extract relevant data
 for file_data in data.values():
     for entry in file_data:
-        component = entry.get("component", "Unknown Component")
         licenses_in_entry = entry.get("licenses", [])
         cryptos_in_entry = entry.get("cryptography", [])
+        health = entry.get("health", {})
+        copyright_text = entry.get("copyright", "No copyright info")
 
-        components.append(component)
+        components.append(entry.get("component", "Unknown Component"))
         for license_info in licenses_in_entry:
             licenses.append(license_info.get("name", "Unknown License"))
         for crypto_info in cryptos_in_entry:
             crypto_algorithms.append(crypto_info.get("algorithm", "Unknown Algorithm"))
+        quality_scores.append(entry.get("quality", [{"score": "N/A"}])[0].get("score", "N/A"))
+        repo_health.append({
+            "Component": entry.get("component", "Unknown Component"),
+            "Stars": health.get("stars", 0),
+            "Forks": health.get("forks", 0),
+            "Issues": health.get("issues", 0),
+            "Last Updated": health.get("last_commit_date", "N/A")
+        })
+        copyrights.append(copyright_text)
 
-# Convert to DataFrames
+# Create DataFrames
 license_df = pd.DataFrame({"License": licenses})
 component_df = pd.DataFrame({"Component": components})
 crypto_df = pd.DataFrame({"Algorithm": crypto_algorithms})
+quality_df = pd.DataFrame({"Quality Score": quality_scores})
+health_df = pd.DataFrame(repo_health)
 
-# Create the charts directory
+# Create charts directory
 os.makedirs("charts", exist_ok=True)
 
-# Function to encode image as base64
-def encode_image_to_base64(filepath):
-    with open(filepath, "rb") as img_file:
+# Function to save and encode chart as base64
+def save_and_encode_chart(filename, chart_func):
+    chart_func()
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    with open(filename, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode("utf-8")
 
-# License Distribution Chart
-license_chart_path = "charts/license_distribution.png"
-plt.figure(figsize=(8, 5))
-if not license_df.empty:
-    license_df["License"].value_counts().plot(kind="bar", color="steelblue")
+# License Distribution Pie Chart
+def license_pie_chart():
+    license_df["License"].value_counts().plot(kind="pie", autopct="%1.1f%%", startangle=90, cmap="Paired")
     plt.title("License Distribution")
-    plt.xlabel("License Type")
-    plt.ylabel("Count")
-    plt.tight_layout()
-    plt.savefig(license_chart_path)
-else:
-    license_chart_base64 = None
-    print("No license data found.")
+    plt.ylabel("")
 
-# Component Usage Chart
-component_chart_path = "charts/component_distribution.png"
-plt.figure(figsize=(8, 5))
-if not component_df.empty:
-    component_df["Component"].value_counts().plot(kind="bar", color="skyblue")
-    plt.title("Component Usage")
-    plt.xlabel("Component Name")
-    plt.ylabel("Count")
-    plt.tight_layout()
-    plt.savefig(component_chart_path)
-else:
-    component_chart_base64 = None
-    print("No component data found.")
+license_base64 = save_and_encode_chart("charts/license_distribution.png", license_pie_chart)
 
-# Cryptographic Algorithms Chart
-crypto_chart_path = "charts/crypto_algorithm_usage.png"
-plt.figure(figsize=(8, 5))
-if not crypto_df.empty:
-    crypto_df["Algorithm"].value_counts().plot(kind="bar", color="orange")
+# Cryptographic Algorithm Usage Pie Chart
+def crypto_pie_chart():
+    crypto_df["Algorithm"].value_counts().plot(kind="pie", autopct="%1.1f%%", startangle=90, cmap="cool")
     plt.title("Cryptographic Algorithm Usage")
-    plt.xlabel("Algorithm")
+    plt.ylabel("")
+
+crypto_base64 = save_and_encode_chart("charts/crypto_usage.png", crypto_pie_chart)
+
+# Quality Scores Bar Chart
+def quality_bar_chart():
+    quality_df["Quality Score"].value_counts().sort_index().plot(kind="bar", color="purple")
+    plt.title("Quality Scores (Best Practices)")
+    plt.xlabel("Score (out of 5)")
     plt.ylabel("Count")
-    plt.tight_layout()
-    plt.savefig(crypto_chart_path)
-else:
-    crypto_chart_base64 = None
-    print("No cryptographic algorithm data found.")
 
-# Base64-encode images
-license_chart_base64 = encode_image_to_base64(license_chart_path) if os.path.exists(license_chart_path) else None
-component_chart_base64 = encode_image_to_base64(component_chart_path) if os.path.exists(component_chart_path) else None
-crypto_chart_base64 = encode_image_to_base64(crypto_chart_path) if os.path.exists(crypto_chart_path) else None
+quality_base64 = save_and_encode_chart("charts/quality_scores.png", quality_bar_chart)
 
-# Generate Summary Markdown
+# Repository Health Table
+health_table_md = tabulate(health_df, headers="keys", tablefmt="github")
+
+# Copyrights Table
+copyrights_df = pd.DataFrame({"Copyrights": copyrights})
+copyrights_md = tabulate(copyrights_df.head(10), headers="keys", tablefmt="github")
+
+# Generate Markdown Summary
 with open("summary.md", "w") as f:
-    f.write("## SCANOSS SBOM Report 📊\n")
+    f.write("## SCANOSS SBOM Dashboard 📊\n")
 
     # License Distribution
-    if license_chart_base64:
-        f.write("### License Distribution\n")
-        f.write(f"![License Distribution](data:image/png;base64,{license_chart_base64})\n")
-    else:
-        f.write("### License Distribution\nNo license data available.\n")
-
-    # Component Usage
-    if component_chart_base64:
-        f.write("### Component Usage\n")
-        f.write(f"![Component Usage](data:image/png;base64,{component_chart_base64})\n")
-    else:
-        f.write("### Component Usage\nNo component data available.\n")
+    f.write("### License Distribution\n")
+    f.write(f"![License Distribution](data:image/png;base64,{license_base64})\n")
 
     # Cryptographic Algorithm Usage
-    if crypto_chart_base64:
-        f.write("### Cryptographic Algorithm Usage\n")
-        f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_chart_base64})\n")
-    else:
-        f.write("### Cryptographic Algorithm Usage\nNo cryptographic algorithm data available.\n")
+    f.write("### Cryptographic Algorithm Usage\n")
+    f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_base64})\n")
 
-    # Summary Table
-    f.write("\n### Summary Table\n")
-    summary_data = {
-        "Top Components": component_df["Component"].value_counts().head(5),
-        "Top Licenses": license_df["License"].value_counts().head(5),
-        "Top Cryptographic Algorithms": crypto_df["Algorithm"].value_counts().head(5),
-    }
+    # Quality Scores
+    f.write("### Quality Scores (Best Practices)\n")
+    f.write(f"![Quality Scores](data:image/png;base64,{quality_base64})\n")
 
-    for key, values in summary_data.items():
-        if not values.empty:
-            f.write(f"#### {key}\n")
-            f.write(tabulate(values.reset_index().values, headers=[key, "Count"], tablefmt="github"))
-            f.write("\n\n")
-        else:
-            f.write(f"#### {key}\nNo data available.\n\n")
+    # Repository Health Table
+    f.write("### Repository Health Metrics\n")
+    f.write(health_table_md + "\n\n")
 
-print("Charts and summary generated successfully.")
+    # Copyright Information
+    f.write("### Sample Copyright Information\n")
+    f.write(copyrights_md + "\n")
+
+print("Dashboard summary generated successfully.")
