@@ -1,4 +1,4 @@
-name: SCANOSS SBOM Generation
+name: SCANOSS SBOM SCANNER
 
 on:
   push:
