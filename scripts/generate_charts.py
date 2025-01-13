@@ -1,8 +1,8 @@
 import json
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
 import base64
+import plotly.express as px
 from tabulate import tabulate
 
 # Load SCANOSS SBOM results
@@ -46,58 +46,46 @@ crypto_df = pd.DataFrame({"Algorithm": crypto_algorithms})
 quality_df = pd.DataFrame({"Quality Score": quality_scores})
 health_df = pd.DataFrame(repo_health)
 
-# Limit the number of rows in the health_df
-health_df = health_df.drop_duplicates().head(10)
-
 # Create charts directory
 os.makedirs("charts", exist_ok=True)
 
-# Function to save and encode chart as base64
-def save_and_encode_chart(filename, chart_func):
-    chart_func()
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    with open(filename, "rb") as img_file:
+# Function to encode image as base64
+def encode_image_to_base64(filepath):
+    with open(filepath, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode("utf-8")
 
 # License Distribution Pie Chart
-def license_pie_chart():
-    license_df["License"].value_counts().plot(kind="pie", autopct="%1.1f%%", startangle=90, cmap="Paired")
-    plt.title("License Distribution")
-    plt.ylabel("")
-
-license_base64 = save_and_encode_chart("charts/license_distribution.png", license_pie_chart)
+fig_license = px.pie(
+    license_df, names='License', title='License Distribution', color_discrete_sequence=px.colors.qualitative.Pastel
+)
+fig_license.write_image("charts/license_distribution.png")
+license_base64 = encode_image_to_base64("charts/license_distribution.png")
 
 # Cryptographic Algorithm Usage Pie Chart
-def crypto_pie_chart():
-    if not crypto_df.empty:
-        crypto_df["Algorithm"].value_counts().plot(kind="pie", autopct="%1.1f%%", startangle=90, cmap="cool")
-        plt.title("Cryptographic Algorithm Usage")
-        plt.ylabel("")
-    else:
-        plt.figure(figsize=(5, 5))
-        plt.text(0.5, 0.5, "No cryptographic data", ha="center", va="center", fontsize=12)
-        plt.axis("off")
-
-crypto_base64 = save_and_encode_chart("charts/crypto_usage.png", crypto_pie_chart)
+if not crypto_df.empty:
+    fig_crypto = px.pie(
+        crypto_df, names='Algorithm', title='Cryptographic Algorithm Usage', color_discrete_sequence=px.colors.qualitative.Safe
+    )
+    fig_crypto.write_image("charts/crypto_usage.png")
+    crypto_base64 = encode_image_to_base64("charts/crypto_usage.png")
+else:
+    crypto_base64 = None
 
 # Quality Scores Bar Chart
-def quality_bar_chart():
-    if not quality_df.empty:
-        quality_df["Quality Score"].value_counts().sort_index().plot(kind="bar", color="purple")
-        plt.title("Quality Scores (Best Practices)")
-        plt.xlabel("Score (out of 5)")
-        plt.ylabel("Count")
-    else:
-        plt.figure(figsize=(5, 5))
-        plt.text(0.5, 0.5, "No quality scores", ha="center", va="center", fontsize=12)
-        plt.axis("off")
-
-quality_base64 = save_and_encode_chart("charts/quality_scores.png", quality_bar_chart)
+if not quality_df.empty:
+    fig_quality = px.bar(
+        quality_df["Quality Score"].value_counts().sort_index(),
+        labels={'index': 'Score (out of 5)', 'value': 'Count'},
+        title='Quality Scores (Best Practices)',
+        color_discrete_sequence=["#AB63FA"],
+    )
+    fig_quality.write_image("charts/quality_scores.png")
+    quality_base64 = encode_image_to_base64("charts/quality_scores.png")
+else:
+    quality_base64 = None
 
 # Repository Health Table
-health_table_md = tabulate(health_df, headers="keys", tablefmt="github")
+health_table_md = tabulate(health_df.drop_duplicates().head(10), headers="keys", tablefmt="github")
 
 # Copyrights Table
 copyrights_df = pd.DataFrame({"Copyrights": copyrights})
@@ -112,12 +100,18 @@ with open("summary.md", "w") as f:
     f.write(f"![License Distribution](data:image/png;base64,{license_base64})\n")
 
     # Cryptographic Algorithm Usage
-    f.write("### Cryptographic Algorithm Usage\n")
-    f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_base64})\n")
+    if crypto_base64:
+        f.write("### Cryptographic Algorithm Usage\n")
+        f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_base64})\n")
+    else:
+        f.write("### Cryptographic Algorithm Usage\nNo cryptographic data available.\n")
 
     # Quality Scores
-    f.write("### Quality Scores (Best Practices)\n")
-    f.write(f"![Quality Scores](data:image/png;base64,{quality_base64})\n")
+    if quality_base64:
+        f.write("### Quality Scores (Best Practices)\n")
+        f.write(f"![Quality Scores](data:image/png;base64,{quality_base64})\n")
+    else:
+        f.write("### Quality Scores (Best Practices)\nNo quality scores available.\n")
 
     # Repository Health Table
     f.write("### Repository Health Metrics\n")
