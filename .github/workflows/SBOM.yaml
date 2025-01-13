@@ -1,0 +1,38 @@
+name: Scan An SBOM
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  scanoss-sbom-charts:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Python dependencies
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install matplotlib pandas
+
+      # Step 3: Generate charts from SCANOSS SBOM results
+      - name: Generate Charts
+        run: |
+          mkdir -p charts
+          python scripts/generate_charts.py
+
+      # Step 4: Embed charts in the workflow summary as base64 images
+      - name: Display Charts in Workflow Summary
+        run: |
+          echo "## SCANOSS SBOM Report 📊" >> $GITHUB_STEP_SUMMARY
+          echo "### License Distribution" >> $GITHUB_STEP_SUMMARY
+          echo "![License Distribution](data:image/png;base64,$(base64 -w 0 charts/license_distribution.png))" >> $GITHUB_STEP_SUMMARY
+          echo "### Component Usage" >> $GITHUB_STEP_SUMMARY
+          echo "![Component Usage](data:image/png;base64,$(base64 -w 0 charts/component_distribution.png))" >> $GITHUB_STEP_SUMMARY
+          echo "### Cryptographic Algorithm Usage" >> $GITHUB_STEP_SUMMARY
+          echo "![Cryptographic Algorithm Usage](data:image/png;base64,$(base64 -w 0 charts/crypto_algorithm_usage.png))" >> $GITHUB_STEP_SUMMARY
