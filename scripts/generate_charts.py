@@ -32,9 +32,9 @@ for file_data in data.values():
         quality_scores.append(entry.get("quality", [{"score": "N/A"}])[0].get("score", "N/A"))
         repo_health.append({
             "Component": entry.get("component", "Unknown Component"),
-            "Stars": health.get("stars", 0),
-            "Forks": health.get("forks", 0),
-            "Issues": health.get("issues", 0),
+            "Stars": health.get("stars", "N/A"),
+            "Forks": health.get("forks", "N/A"),
+            "Issues": health.get("issues", "N/A"),
             "Last Updated": health.get("last_commit_date", "N/A")
         })
         copyrights.append(copyright_text)
@@ -45,6 +45,9 @@ component_df = pd.DataFrame({"Component": components})
 crypto_df = pd.DataFrame({"Algorithm": crypto_algorithms})
 quality_df = pd.DataFrame({"Quality Score": quality_scores})
 health_df = pd.DataFrame(repo_health)
+
+# Limit the number of rows in the health_df
+health_df = health_df.drop_duplicates().head(10)
 
 # Create charts directory
 os.makedirs("charts", exist_ok=True)
@@ -68,18 +71,28 @@ license_base64 = save_and_encode_chart("charts/license_distribution.png", licens
 
 # Cryptographic Algorithm Usage Pie Chart
 def crypto_pie_chart():
-    crypto_df["Algorithm"].value_counts().plot(kind="pie", autopct="%1.1f%%", startangle=90, cmap="cool")
-    plt.title("Cryptographic Algorithm Usage")
-    plt.ylabel("")
+    if not crypto_df.empty:
+        crypto_df["Algorithm"].value_counts().plot(kind="pie", autopct="%1.1f%%", startangle=90, cmap="cool")
+        plt.title("Cryptographic Algorithm Usage")
+        plt.ylabel("")
+    else:
+        plt.figure(figsize=(5, 5))
+        plt.text(0.5, 0.5, "No cryptographic data", ha="center", va="center", fontsize=12)
+        plt.axis("off")
 
 crypto_base64 = save_and_encode_chart("charts/crypto_usage.png", crypto_pie_chart)
 
 # Quality Scores Bar Chart
 def quality_bar_chart():
-    quality_df["Quality Score"].value_counts().sort_index().plot(kind="bar", color="purple")
-    plt.title("Quality Scores (Best Practices)")
-    plt.xlabel("Score (out of 5)")
-    plt.ylabel("Count")
+    if not quality_df.empty:
+        quality_df["Quality Score"].value_counts().sort_index().plot(kind="bar", color="purple")
+        plt.title("Quality Scores (Best Practices)")
+        plt.xlabel("Score (out of 5)")
+        plt.ylabel("Count")
+    else:
+        plt.figure(figsize=(5, 5))
+        plt.text(0.5, 0.5, "No quality scores", ha="center", va="center", fontsize=12)
+        plt.axis("off")
 
 quality_base64 = save_and_encode_chart("charts/quality_scores.png", quality_bar_chart)
 
