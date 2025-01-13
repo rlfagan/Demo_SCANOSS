@@ -1,0 +1,56 @@
+name: SCANOSS Crypto Scan
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  scan-crypto:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Install SCANOSS CLI dependencies
+      - name: Install SCANOSS CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install scanoss[fast_winnowing]
+
+      # Step 3: Parse SBOM and generate list of PURLs
+      - name: Extract PURLs from SBOM
+        run: |
+          python -c "
+import json
+with open('bigsbom.json') as f:
+    sbom = json.load(f)
+purls = [comp['purl'] for comp in sbom.get('components', []) if 'purl' in comp]
+with open('purls.txt', 'w') as out:
+    out.write('\n'.join(purls))
+"
+
+      # Step 4: Run SCANOSS Crypto Scan for each PURL
+      - name: Scan PURLs for Cryptography
+        run: |
+          while IFS= read -r purl; do
+            scanoss-py comp crypto --key ${{ secrets.SCANOSS_API_KEY }} -p "$purl" >> crypto_results.json
+          done < purls.txt
+
+      # Step 5: Display Results in Workflow Summary
+      - name: Display Cryptography Summary
+        run: |
+          echo "## Cryptographic Algorithm Report" >> $GITHUB_STEP_SUMMARY
+          python -c "
+import json
+with open('crypto_results.json') as f:
+    results = json.load(f)
+for result in results.get('purls', []):
+    purl = result['purl']
+    algorithms = result.get('algorithms', [])
+    print(f'### Component: {purl}')
+    for algo in algorithms:
+        print(f'- Algorithm: {algo['algorithm']} (Strength: {algo.get('strength', 'N/A')})')
+" >> $GITHUB_STEP_SUMMARY
