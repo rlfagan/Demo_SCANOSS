@@ -1,25 +1,30 @@
+name: Example SCANOSS SBOM SCANNER
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 jobs:
   scanoss-analysis:
+    name: SCANOSS Analysis
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
+        id: checkout
         uses: actions/checkout@v4
 
-      - name: List files in working directory
-        run: ls -R .
-
       - name: Run SCANOSS analysis
+        id: scan
         uses: scanoss/actions-scan@v0
         with:
           policies: copyleft, undeclared
-          policies.halt_on_failure: true
-          sbom.enabled: true
-          sbom.filepath: sbom.json
-          dependencies.enabled: false
-          output.filepath: results.json
-
-      - name: Upload results artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: scan-results
-          path: results.json
