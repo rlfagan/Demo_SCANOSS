@@ -1,0 +1,30 @@
+name: Example SCANOSS Action
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  scanoss-analysis:
+    name: SCANOSS Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Run SCANOSS analysis
+        id: scan
+        uses: scanoss/actions-scan@v0
+        with:
+          policies: copyleft, undeclared
