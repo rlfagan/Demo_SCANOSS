@@ -20,7 +20,7 @@ jobs:
       - name: Generate SBOM using SCANOSS Docker
         run: |
           docker pull ghcr.io/scanoss/scanoss-py:v1.19.0
-          docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ -i sbom.json -o /scanoss/results.json
+          docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ -o /scanoss/results.json
 
       - name: Upload SBOM as Artifact
         uses: actions/upload-artifact@v3
