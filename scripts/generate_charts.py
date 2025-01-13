@@ -38,45 +38,92 @@ def encode_image_to_base64(filepath):
     with open(filepath, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode("utf-8")
 
-# Pie Chart Function
-def create_pie_chart(df, column, title, output_path, top_n=5):
-    if not df.empty:
-        data = df[column].value_counts().head(top_n)
-        labels = data.index
-        sizes = data.values
+# License Distribution Chart
+license_chart_path = "charts/license_distribution.png"
+plt.figure(figsize=(8, 5))
+if not license_df.empty:
+    license_df["License"].value_counts().plot(kind="bar", color="steelblue")
+    plt.title("License Distribution")
+    plt.xlabel("License Type")
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.savefig(license_chart_path)
+else:
+    license_chart_base64 = None
+    print("No license data found.")
 
-        plt.figure(figsize=(8, 8))
-        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
-        plt.title(title)
-        plt.savefig(output_path)
-        plt.close()
-    else:
-        print(f"No data available for {title}")
+# Component Usage Chart
+component_chart_path = "charts/component_distribution.png"
+plt.figure(figsize=(8, 5))
+if not component_df.empty:
+    component_df["Component"].value_counts().plot(kind="bar", color="skyblue")
+    plt.title("Component Usage")
+    plt.xlabel("Component Name")
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.savefig(component_chart_path)
+else:
+    component_chart_base64 = None
+    print("No component data found.")
 
-# Generate pie charts
-create_pie_chart(license_df, "License", "License Distribution", "charts/license_distribution.png")
-create_pie_chart(component_df, "Component", "Component Usage", "charts/component_distribution.png")
-create_pie_chart(crypto_df, "Algorithm", "Cryptographic Algorithm Usage", "charts/crypto_algorithm_usage.png")
+# Cryptographic Algorithms Chart
+crypto_chart_path = "charts/crypto_algorithm_usage.png"
+plt.figure(figsize=(8, 5))
+if not crypto_df.empty:
+    crypto_df["Algorithm"].value_counts().plot(kind="bar", color="orange")
+    plt.title("Cryptographic Algorithm Usage")
+    plt.xlabel("Algorithm")
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.savefig(crypto_chart_path)
+else:
+    crypto_chart_base64 = None
+    print("No cryptographic algorithm data found.")
 
-# Base64-encode images for embedding in Markdown
-license_chart_base64 = encode_image_to_base64("charts/license_distribution.png")
-component_chart_base64 = encode_image_to_base64("charts/component_distribution.png")
-crypto_chart_base64 = encode_image_to_base64("charts/crypto_algorithm_usage.png")
+# Base64-encode images
+license_chart_base64 = encode_image_to_base64(license_chart_path) if os.path.exists(license_chart_path) else None
+component_chart_base64 = encode_image_to_base64(component_chart_path) if os.path.exists(component_chart_path) else None
+crypto_chart_base64 = encode_image_to_base64(crypto_chart_path) if os.path.exists(crypto_chart_path) else None
 
 # Generate Summary Markdown
 with open("summary.md", "w") as f:
     f.write("## SCANOSS SBOM Report 📊\n")
 
     # License Distribution
-    f.write("### License Distribution\n")
-    f.write(f"![License Distribution](data:image/png;base64,{license_chart_base64})\n")
+    if license_chart_base64:
+        f.write("### License Distribution\n")
+        f.write(f"![License Distribution](data:image/png;base64,{license_chart_base64})\n")
+    else:
+        f.write("### License Distribution\nNo license data available.\n")
 
     # Component Usage
-    f.write("### Component Usage\n")
-    f.write(f"![Component Usage](data:image/png;base64,{component_chart_base64})\n")
+    if component_chart_base64:
+        f.write("### Component Usage\n")
+        f.write(f"![Component Usage](data:image/png;base64,{component_chart_base64})\n")
+    else:
+        f.write("### Component Usage\nNo component data available.\n")
 
     # Cryptographic Algorithm Usage
-    f.write("### Cryptographic Algorithm Usage\n")
-    f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_chart_base64})\n")
+    if crypto_chart_base64:
+        f.write("### Cryptographic Algorithm Usage\n")
+        f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_chart_base64})\n")
+    else:
+        f.write("### Cryptographic Algorithm Usage\nNo cryptographic algorithm data available.\n")
 
-print("Pie charts and summary generated successfully.")
+    # Summary Table
+    f.write("\n### Summary Table\n")
+    summary_data = {
+        "Top Components": component_df["Component"].value_counts().head(5),
+        "Top Licenses": license_df["License"].value_counts().head(5),
+        "Top Cryptographic Algorithms": crypto_df["Algorithm"].value_counts().head(5),
+    }
+
+    for key, values in summary_data.items():
+        if not values.empty:
+            f.write(f"#### {key}\n")
+            f.write(tabulate(values.reset_index().values, headers=[key, "Count"], tablefmt="github"))
+            f.write("\n\n")
+        else:
+            f.write(f"#### {key}\nNo data available.\n\n")
+
+print("Charts and summary generated successfully.")
