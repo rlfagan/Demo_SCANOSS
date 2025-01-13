@@ -1,4 +1,4 @@
-name: Scan An SBOMs
+name: SCANOSS SBOM SCANNER
 
 on:
   push:
@@ -6,10 +6,32 @@ on:
       - '*'
 
 jobs:
-  scanoss-sbom-charts:
+  generate-sbom:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Check out the source code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Login to Docker (if needed)
+      - name: Log in to GitHub Docker Registry
+        if: env.DOCKER_AUTH_REQUIRED == 'true'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # Step 3: Run SCANOSS in Docker to generate SBOM
+      - name: Generate SBOM using SCANOSS Docker
+        run: |
+          docker pull ghcr.io/scanoss/scanoss-py:v1.19.0  # Ensure the image is pulled
+          docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ -i sbom.json -o results.json
+
+      # Step 4: Upload the generated SBOM as an artifact
+      - name: Upload SBOM as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Results
+          path: ./results.json
+    #Generate Charts
       # Step 1: Check out the repository code
       - name: Checkout Code
         uses: actions/checkout@v4
