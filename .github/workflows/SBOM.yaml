@@ -1,4 +1,4 @@
-name: Scan An SBOM
+name: Scan An SBOMs
 
 on:
   push:
