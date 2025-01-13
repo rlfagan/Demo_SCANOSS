@@ -1,57 +1,33 @@
-name: SCANOSS Open-Source Compliance and Security Scan
+name: SCANOSS SBOM Generation
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - '*'
 
 jobs:
-  scanoss-sbom-scan:
+  generate-sbom:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
+      # Step 1: Check out the source code
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 4: Perform SCANOSS Scan
-      - name: Run SCANOSS Scan
+      # Step 2: Login to Docker (if needed)
+      - name: Log in to GitHub Docker Registry
+        if: env.DOCKER_AUTH_REQUIRED == 'true'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # Step 3: Run SCANOSS in Docker to generate SBOM
+      - name: Generate SBOM using SCANOSS Docker
         run: |
-          node ./scan-script.js
-        env:
-          # Mandatory Options
-          INPUT_FILEPATH: './src'            # Path to scan (source code folder)
-          OUTPUT_FILEPATH: './results.json'  # Path for storing scan results
+          docker pull ghcr.io/scanoss/scanoss-py:v1.19.0  # Ensure the image is pulled
+          docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan . --sbom --output ./sbom.spdx
 
-          # Docker Runtime Container
-          RUNTIME_CONTAINER: 'ghcr.io/scanoss/scanoss-py:v1.19.0'
-
-          # API Key and URL (Optional for authenticated scans)
-          API_KEY: ${{ secrets.SCANOSS_API_KEY }}  # API Key for SCANOSS (stored as secret)
-          API_URL: 'https://osskb.scanoss.com/api'  # Custom SCANOSS API URL
-
-          # File and Snippet Scanning Options
-          SCAN_FILES: 'true'              # Enable file scanning (true/false)
-          SKIP_SNIPPETS: 'false'           # Enable snippet-level scanning (true to skip snippets)
-
-          # Dependency Scanning Options
-          DEPENDENCIES_ENABLED: 'true'     # Enable dependency scanning (true/false)
-          DEPENDENCY_SCOPE: 'prod'         # Scan production dependencies only
-          DEPENDENCY_SCOPE_INCLUDE: ''     # Leave empty if not including custom dependency scopes
-          DEPENDENCY_SCOPE_EXCLUDE: ''     # Leave empty if not excluding any dependency scopes
-
-          # SBOM Ingestion Options
-          SBOM_ENABLED: 'true'             # Enable SBOM ingestion for additional insights
-          SETTINGS_FILE_PATH: './scanoss.json'  # Path to the SCANOSS configuration file (optional)
-
-      # Step 5: Upload Scan Results
-      - name: Upload Scan Results as Artifact
+      # Step 4: Upload the generated SBOM as an artifact
+      - name: Upload SBOM as Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: scan-results
-          path: ./results.json
-
-
+          name: SBOM
+          path: ./sbom.spdx
