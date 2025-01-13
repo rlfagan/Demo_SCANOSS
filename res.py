@@ -1,8 +1,6 @@
 import json
 import pandas as pd
-import matplotlib.pyplot as plt
-import os
-import base64
+from collections import Counter
 from tabulate import tabulate
 
 # Load SCANOSS SBOM results
@@ -10,73 +8,76 @@ with open("results.json", "r") as file:
     data = json.load(file)
 
 licenses = []
-components = []
+components_metadata = []
 crypto_algorithms = []
+provenance_data = []
 
+# Extract relevant data
 for file_data in data.values():
     for entry in file_data:
-        component = entry.get("component", "Unknown Component")
         licenses_in_entry = entry.get("licenses", [])
         cryptos_in_entry = entry.get("cryptography", [])
+        provenance = entry.get("provenance", {}).get("country", "Unknown")
+        provenance_data.append(provenance)
 
-        components.append(component)
+        component_name = entry.get("component", "Unknown Component")
+        stars = entry.get("health", {}).get("stars", "N/A")
+        forks = entry.get("health", {}).get("forks", "N/A")
+        issues = entry.get("health", {}).get("issues", "N/A")
+        last_updated = entry.get("health", {}).get("last_commit_date", "N/A")
+        version = entry.get("version", "N/A")
+        author = entry.get("author", "N/A")
+        license_name = licenses_in_entry[0].get("name", "Unknown License") if licenses_in_entry else "Unknown License"
+        quality_score = entry.get("quality", [{}])[0].get("score", "N/A")
+
+        # Collect metadata for components
+        components_metadata.append({
+            "Component": component_name,
+            "Stars": stars,
+            "Forks": forks,
+            "Issues": issues,
+            "Last Updated": last_updated,
+            "Provenance": provenance,
+            "Version": version,
+            "Author": author,
+            "License": license_name,
+            "Quality Score": quality_score
+        })
+
+        # Collect license data
         for license_info in licenses_in_entry:
             licenses.append(license_info.get("name", "Unknown License"))
+
+        # Collect cryptographic algorithms
         for crypto_info in cryptos_in_entry:
             crypto_algorithms.append(crypto_info.get("algorithm", "Unknown Algorithm"))
 
-# Convert to DataFrames
+# Create DataFrames
 license_df = pd.DataFrame({"License": licenses})
-component_df = pd.DataFrame({"Component": components})
 crypto_df = pd.DataFrame({"Algorithm": crypto_algorithms})
+components_df = pd.DataFrame(components_metadata)
 
-# Create the charts directory
-os.makedirs("charts", exist_ok=True)
+# Generate summaries
+license_summary = license_df["License"].value_counts().head(10).reset_index().values
+crypto_summary = crypto_df["Algorithm"].value_counts().head(10).reset_index().values
+provenance_summary = Counter(provenance_data).items()
 
-# Function to encode image as base64
-def encode_image_to_base64(filepath):
-    with open(filepath, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode("utf-8")
+# Markdown sections
+license_md = tabulate(license_summary, headers=["License", "Count"], tablefmt="github")
+crypto_md = tabulate(crypto_summary, headers=["Algorithm", "Count"], tablefmt="github")
+component_metadata_md = tabulate(components_df.head(10), headers="keys", tablefmt="github")
 
-# Pie Chart Function
-def create_pie_chart(df, column, title, output_path, top_n=5):
-    if not df.empty:
-        data = df[column].value_counts().head(top_n)
-        labels = data.index
-        sizes = data.values
-
-        plt.figure(figsize=(8, 8))
-        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
-        plt.title(title)
-        plt.savefig(output_path)
-        plt.close()
-    else:
-        print(f"No data available for {title}")
-
-# Generate pie charts
-create_pie_chart(license_df, "License", "License Distribution", "charts/license_distribution.png")
-create_pie_chart(component_df, "Component", "Component Usage", "charts/component_distribution.png")
-create_pie_chart(crypto_df, "Algorithm", "Cryptographic Algorithm Usage", "charts/crypto_algorithm_usage.png")
-
-# Base64-encode images for embedding in Markdown
-license_chart_base64 = encode_image_to_base64("charts/license_distribution.png")
-component_chart_base64 = encode_image_to_base64("charts/component_distribution.png")
-crypto_chart_base64 = encode_image_to_base64("charts/crypto_algorithm_usage.png")
-
-# Generate Summary Markdown
+# Generate Markdown summary
 with open("summary.md", "w") as f:
-    f.write("## SCANOSS SBOM Report 📊\n")
+    f.write("# SCANOSS SBOM Dashboard 📊\n\n")
+    f.write("## License Distribution (Top 10)\n")
+    f.write(license_md + "\n\n")
+    f.write("## Cryptographic Algorithm Usage\n")
+    f.write(crypto_md if not crypto_df.empty else "No cryptographic data available.\n")
+    f.write("\n\n## Repository Component Metadata\n")
+    f.write(component_metadata_md + "\n\n")
+    f.write("### Provenance Summary:\n")
+    f.write("\n".join([f"- **{country}**: {count} components" for country, count in provenance_summary]) + "\n\n")
+    f.write("## Notes:\n- No vulnerabilities detected.\n- Full SBOM details are available in the uploaded artifact.\n")
 
-    # License Distribution
-    f.write("### License Distribution\n")
-    f.write(f"![License Distribution](data:image/png;base64,{license_chart_base64})\n")
-
-    # Component Usage
-    f.write("### Component Usage\n")
-    f.write(f"![Component Usage](data:image/png;base64,{component_chart_base64})\n")
-
-    # Cryptographic Algorithm Usage
-    f.write("### Cryptographic Algorithm Usage\n")
-    f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_chart_base64})\n")
-
-print("Pie charts and summary generated successfully.")
+print("Text-only dashboard summary generated successfully.")

@@ -66,8 +66,8 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.080896s",
-        "flags": "16384",
+        "elapsed": "0.078738s",
+        "flags": "0",
         "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
@@ -139,9 +139,9 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.010225s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.006363s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -288,9 +288,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.004253s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.007504s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -453,9 +453,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.006228s",
-        "flags": "16384",
-        "hostname": "p16",
+        "elapsed": "0.003315s",
+        "flags": "0",
+        "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -564,8 +564,8 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.023941s",
-        "flags": "16384",
+        "elapsed": "0.023671s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -709,9 +709,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.007781s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.003269s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -795,9 +795,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.015896s",
-        "flags": "16384",
-        "hostname": "p16",
+        "elapsed": "0.025238s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -940,9 +940,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.003144s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.002394s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -1050,9 +1050,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.021471s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.016532s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -1227,9 +1227,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.003127s",
-        "flags": "16384",
-        "hostname": "p16",
+        "elapsed": "0.006462s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -1308,9 +1308,9 @@
       "quality": [],
       "release_date": "2015-03-19",
       "server": {
-        "elapsed": "0.030116s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.029406s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -1453,8 +1453,8 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.016842s",
-        "flags": "16384",
+        "elapsed": "0.012826s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -1522,9 +1522,9 @@
       ],
       "release_date": "2012-05-10",
       "server": {
-        "elapsed": "0.167916s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.122641s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -1610,8 +1610,8 @@
       ],
       "release_date": "2016-01-28",
       "server": {
-        "elapsed": "0.069475s",
-        "flags": "16384",
+        "elapsed": "0.068958s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -1698,8 +1698,8 @@
       ],
       "release_date": "2011-06-09",
       "server": {
-        "elapsed": "0.278609s",
-        "flags": "16384",
+        "elapsed": "0.278767s",
+        "flags": "0",
         "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
@@ -1796,8 +1796,8 @@
       ],
       "release_date": "2016-01-28",
       "server": {
-        "elapsed": "0.069699s",
-        "flags": "16384",
+        "elapsed": "0.067254s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -1813,6 +1813,36 @@
       "vendor": "hardenedbsd",
       "version": "hardenedbsd-10-stable-20160129-1",
       "vulnerabilities": []
+    }
+  ],
+  "res.py": [
+    {
+      "id": "none",
+      "server": {
+        "elapsed": "0.006953s",
+        "flags": "0",
+        "hostname": "p16",
+        "kb_version": {
+          "daily": "25.01.13",
+          "monthly": "24.12"
+        },
+        "version": "5.4.9"
+      }
+    }
+  ],
+  "results.py": [
+    {
+      "id": "none",
+      "server": {
+        "elapsed": "0.002661s",
+        "flags": "0",
+        "hostname": "p16",
+        "kb_version": {
+          "daily": "25.01.13",
+          "monthly": "24.12"
+        },
+        "version": "5.4.9"
+      }
     }
   ],
   "s23_clnt.c": [
@@ -1929,8 +1959,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.003040s",
-        "flags": "16384",
+        "elapsed": "0.002889s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -2024,9 +2054,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.143588s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.107262s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -2138,9 +2168,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.143297s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.099257s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -2224,9 +2254,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.099697s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.081881s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -2323,9 +2353,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.019691s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.024310s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -2471,9 +2501,9 @@
       "quality": [],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.005454s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.003184s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -2562,9 +2592,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.122078s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.089742s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -2669,8 +2699,8 @@
       ],
       "release_date": "2018-05-14",
       "server": {
-        "elapsed": "0.004551s",
-        "flags": "16384",
+        "elapsed": "0.001801s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -2755,8 +2785,8 @@
       ],
       "release_date": "2016-05-03",
       "server": {
-        "elapsed": "0.064674s",
-        "flags": "16384",
+        "elapsed": "0.064578s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -2845,8 +2875,8 @@
       ],
       "release_date": "2015-06-11",
       "server": {
-        "elapsed": "0.079641s",
-        "flags": "16384",
+        "elapsed": "0.083519s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -2943,8 +2973,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.035474s",
-        "flags": "16384",
+        "elapsed": "0.035455s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -3100,9 +3130,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.007923s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.003432s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -3198,8 +3228,8 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.011364s",
-        "flags": "16384",
+        "elapsed": "0.011235s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -3388,8 +3418,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.006443s",
-        "flags": "16384",
+        "elapsed": "0.005090s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -3502,9 +3532,9 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.011052s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.011468s",
+        "flags": "0",
+        "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -3708,9 +3738,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.003365s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.007187s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -3822,9 +3852,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.107253s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.145512s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -3916,8 +3946,8 @@
       ],
       "release_date": "2015-06-11",
       "server": {
-        "elapsed": "0.016512s",
-        "flags": "16384",
+        "elapsed": "0.012312s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -4118,9 +4148,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.005135s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.006032s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4137,12 +4167,27 @@
       "vulnerabilities": []
     }
   ],
+  "scripts/generate_charts.py": [
+    {
+      "id": "none",
+      "server": {
+        "elapsed": "0.041365s",
+        "flags": "0",
+        "hostname": "p17",
+        "kb_version": {
+          "daily": "25.01.13",
+          "monthly": "24.12"
+        },
+        "version": "5.4.9"
+      }
+    }
+  ],
   "src.zip": [
     {
       "id": "none",
       "server": {
-        "elapsed": "0.000062s",
-        "flags": "16384",
+        "elapsed": "0.000054s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -4220,9 +4265,9 @@
       ],
       "release_date": "2024-03-22",
       "server": {
-        "elapsed": "0.002077s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.002042s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4307,9 +4352,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001013s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000716s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4400,9 +4445,9 @@
       ],
       "release_date": "2024-03-22",
       "server": {
-        "elapsed": "0.001216s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.002017s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4487,9 +4532,9 @@
       ],
       "release_date": "2024-03-22",
       "server": {
-        "elapsed": "0.001488s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000704s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4574,9 +4619,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001138s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.001269s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4667,9 +4712,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001367s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.001492s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4760,9 +4805,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001274s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.001308s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4853,9 +4898,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001381s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.001306s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -4946,9 +4991,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001070s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000433s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5039,9 +5084,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.000954s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000425s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5132,9 +5177,9 @@
       ],
       "release_date": "2024-03-22",
       "server": {
-        "elapsed": "0.001255s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.003093s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5219,9 +5264,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001149s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.001394s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5325,9 +5370,9 @@
       ],
       "release_date": "2024-08-21",
       "server": {
-        "elapsed": "0.001245s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.000398s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5418,9 +5463,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001250s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.001564s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5524,9 +5569,9 @@
       ],
       "release_date": "2024-08-21",
       "server": {
-        "elapsed": "0.001247s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.000406s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5553,9 +5598,9 @@
     {
       "id": "none",
       "server": {
-        "elapsed": "0.001468s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.003380s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5632,9 +5677,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001101s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.001297s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5725,9 +5770,9 @@
       ],
       "release_date": "2024-12-20",
       "server": {
-        "elapsed": "0.001046s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000432s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5804,9 +5849,9 @@
       ],
       "release_date": "2024-08-21",
       "server": {
-        "elapsed": "0.001238s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000513s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -5910,9 +5955,9 @@
       ],
       "release_date": "2024-08-21",
       "server": {
-        "elapsed": "0.001239s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.000500s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -6033,8 +6078,8 @@
       "quality": [],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.032340s",
-        "flags": "16384",
+        "elapsed": "0.026445s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -6173,8 +6218,8 @@
       ],
       "release_date": "2014-10-15",
       "server": {
-        "elapsed": "0.017931s",
-        "flags": "16384",
+        "elapsed": "0.015269s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -6370,8 +6415,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.009449s",
-        "flags": "16384",
+        "elapsed": "0.008082s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -6479,8 +6524,8 @@
       ],
       "release_date": "2011-06-09",
       "server": {
-        "elapsed": "0.335679s",
-        "flags": "16384",
+        "elapsed": "0.339376s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -6592,8 +6637,8 @@
       "quality": [],
       "release_date": "2011-06-09",
       "server": {
-        "elapsed": "0.350934s",
-        "flags": "16384",
+        "elapsed": "0.351280s",
+        "flags": "0",
         "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
@@ -6728,9 +6773,9 @@
       ],
       "release_date": "2015-11-18",
       "server": {
-        "elapsed": "0.021817s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.019807s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -6870,9 +6915,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.015729s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.024900s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -6968,8 +7013,8 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.027847s",
-        "flags": "16384",
+        "elapsed": "0.027453s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -7070,9 +7115,9 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.010161s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.008388s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -7208,9 +7253,9 @@
       ],
       "release_date": "2016-05-03",
       "server": {
-        "elapsed": "0.010859s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.009553s",
+        "flags": "0",
+        "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -7365,9 +7410,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.004236s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.006533s",
+        "flags": "0",
+        "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -7451,9 +7496,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.142685s",
-        "flags": "16384",
-        "hostname": "p17",
+        "elapsed": "0.107276s",
+        "flags": "0",
+        "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -7636,8 +7681,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.002922s",
-        "flags": "16384",
+        "elapsed": "0.002841s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -7829,8 +7874,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.004292s",
-        "flags": "16384",
+        "elapsed": "0.002693s",
+        "flags": "0",
         "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
@@ -7923,8 +7968,8 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.014934s",
-        "flags": "16384",
+        "elapsed": "0.008242s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -8076,9 +8121,9 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.007014s",
-        "flags": "16384",
-        "hostname": "p16",
+        "elapsed": "0.003072s",
+        "flags": "0",
+        "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -8166,8 +8211,8 @@
       ],
       "release_date": "2015-06-11",
       "server": {
-        "elapsed": "0.094871s",
-        "flags": "16384",
+        "elapsed": "0.091869s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -8269,8 +8314,8 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.138503s",
-        "flags": "16384",
+        "elapsed": "0.137862s",
+        "flags": "0",
         "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
@@ -8395,9 +8440,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.016694s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.026270s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -8496,9 +8541,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.103643s",
-        "flags": "16384",
-        "hostname": "p18",
+        "elapsed": "0.142991s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -8614,8 +8659,8 @@
       ],
       "release_date": "2015-12-03",
       "server": {
-        "elapsed": "0.008723s",
-        "flags": "16384",
+        "elapsed": "0.006546s",
+        "flags": "0",
         "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
@@ -8728,9 +8773,9 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.016445s",
-        "flags": "16384",
-        "hostname": "p16",
+        "elapsed": "0.024919s",
+        "flags": "0",
+        "hostname": "p17",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -8842,8 +8887,8 @@
       ],
       "release_date": "2016-01-28",
       "server": {
-        "elapsed": "0.007982s",
-        "flags": "16384",
+        "elapsed": "0.007864s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -9043,8 +9088,8 @@
       ],
       "release_date": "2016-09-22",
       "server": {
-        "elapsed": "0.005262s",
-        "flags": "16384",
+        "elapsed": "0.006338s",
+        "flags": "0",
         "hostname": "p16",
         "kb_version": {
           "daily": "25.01.13",
@@ -9157,8 +9202,8 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.016710s",
-        "flags": "16384",
+        "elapsed": "0.014416s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -9247,8 +9292,8 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.095944s",
-        "flags": "16384",
+        "elapsed": "0.098282s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -9357,8 +9402,8 @@
       ],
       "release_date": "2015-01-22",
       "server": {
-        "elapsed": "0.017312s",
-        "flags": "16384",
+        "elapsed": "0.014289s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
@@ -9509,9 +9554,9 @@
       ],
       "release_date": "2015-11-18",
       "server": {
-        "elapsed": "0.026670s",
-        "flags": "16384",
-        "hostname": "p16",
+        "elapsed": "0.020018s",
+        "flags": "0",
+        "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
           "monthly": "24.12"
@@ -9590,8 +9635,8 @@
       "quality": [],
       "release_date": "2015-06-11",
       "server": {
-        "elapsed": "0.094722s",
-        "flags": "16384",
+        "elapsed": "0.091370s",
+        "flags": "0",
         "hostname": "p18",
         "kb_version": {
           "daily": "25.01.13",
