@@ -1,8 +1,6 @@
 import json
 import pandas as pd
 import os
-import base64
-import plotly.express as px
 from tabulate import tabulate
 
 # Load SCANOSS SBOM results
@@ -41,48 +39,14 @@ for file_data in data.values():
 
 # Create DataFrames
 license_df = pd.DataFrame({"License": licenses})
-component_df = pd.DataFrame({"Component": components})
 crypto_df = pd.DataFrame({"Algorithm": crypto_algorithms})
 quality_df = pd.DataFrame({"Quality Score": quality_scores})
 health_df = pd.DataFrame(repo_health)
 
-# Create charts directory
-os.makedirs("charts", exist_ok=True)
-
-# Function to encode image as base64
-def encode_image_to_base64(filepath):
-    with open(filepath, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode("utf-8")
-
-# License Distribution Pie Chart
-fig_license = px.pie(
-    license_df, names='License', title='License Distribution', color_discrete_sequence=px.colors.qualitative.Pastel
-)
-fig_license.write_image("charts/license_distribution.png")
-license_base64 = encode_image_to_base64("charts/license_distribution.png")
-
-# Cryptographic Algorithm Usage Pie Chart
-if not crypto_df.empty:
-    fig_crypto = px.pie(
-        crypto_df, names='Algorithm', title='Cryptographic Algorithm Usage', color_discrete_sequence=px.colors.qualitative.Safe
-    )
-    fig_crypto.write_image("charts/crypto_usage.png")
-    crypto_base64 = encode_image_to_base64("charts/crypto_usage.png")
-else:
-    crypto_base64 = None
-
-# Quality Scores Bar Chart
-if not quality_df.empty:
-    fig_quality = px.bar(
-        quality_df["Quality Score"].value_counts().sort_index(),
-        labels={'index': 'Score (out of 5)', 'value': 'Count'},
-        title='Quality Scores (Best Practices)',
-        color_discrete_sequence=["#AB63FA"],
-    )
-    fig_quality.write_image("charts/quality_scores.png")
-    quality_base64 = encode_image_to_base64("charts/quality_scores.png")
-else:
-    quality_base64 = None
+# Summary Data
+license_summary = license_df["License"].value_counts().head(10).reset_index().values
+crypto_summary = crypto_df["Algorithm"].value_counts().head(10).reset_index().values
+quality_summary = quality_df["Quality Score"].value_counts().sort_index().reset_index().values
 
 # Repository Health Table
 health_table_md = tabulate(health_df.drop_duplicates().head(10), headers="keys", tablefmt="github")
@@ -95,23 +59,17 @@ copyrights_md = tabulate(copyrights_df.head(10), headers="keys", tablefmt="githu
 with open("summary.md", "w") as f:
     f.write("## SCANOSS SBOM Dashboard 📊\n")
 
-    # License Distribution
-    f.write("### License Distribution\n")
-    f.write(f"![License Distribution](data:image/png;base64,{license_base64})\n")
+    # License Summary Table
+    f.write("### License Distribution (Top 10)\n")
+    f.write(tabulate(license_summary, headers=["License", "Count"], tablefmt="github") + "\n\n")
 
-    # Cryptographic Algorithm Usage
-    if crypto_base64:
-        f.write("### Cryptographic Algorithm Usage\n")
-        f.write(f"![Cryptographic Algorithm Usage](data:image/png;base64,{crypto_base64})\n")
-    else:
-        f.write("### Cryptographic Algorithm Usage\nNo cryptographic data available.\n")
+    # Cryptographic Algorithm Summary Table
+    f.write("### Cryptographic Algorithm Usage (Top 10)\n")
+    f.write(tabulate(crypto_summary, headers=["Algorithm", "Count"], tablefmt="github") + "\n\n")
 
-    # Quality Scores
-    if quality_base64:
-        f.write("### Quality Scores (Best Practices)\n")
-        f.write(f"![Quality Scores](data:image/png;base64,{quality_base64})\n")
-    else:
-        f.write("### Quality Scores (Best Practices)\nNo quality scores available.\n")
+    # Quality Score Summary Table
+    f.write("### Quality Scores (Best Practices)\n")
+    f.write(tabulate(quality_summary, headers=["Score (out of 5)", "Count"], tablefmt="github") + "\n\n")
 
     # Repository Health Table
     f.write("### Repository Health Metrics\n")
@@ -121,4 +79,4 @@ with open("summary.md", "w") as f:
     f.write("### Sample Copyright Information\n")
     f.write(copyrights_md + "\n")
 
-print("Dashboard summary generated successfully.")
+print("Text-only dashboard summary generated successfully.")
