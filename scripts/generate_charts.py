@@ -1,24 +1,34 @@
 import json
+import pandas as pd
 from collections import Counter
 from tabulate import tabulate
 
-# Load the SCANOSS SBOM results
+# Load SCANOSS SBOM results
 with open("results.json", "r") as file:
     data = json.load(file)
 
 licenses = []
-crypto_algorithms = []
 components_metadata = []
+crypto_algorithms = []
 provenance_data = []
 
-# Extract data
-for file_name, file_data in data.items():
+# Extract relevant data
+for file_data in data.values():
     for entry in file_data:
+        # Extract licenses
         licenses_in_entry = entry.get("licenses", [])
-        cryptos_in_entry = entry.get("cryptography", [])
-        provenance = entry.get("provenance", "Unknown").strip() or "Unknown"
-        provenance_data.append(provenance)
+        for license_info in licenses_in_entry:
+            licenses.append(license_info.get("name", "Unknown License"))
 
+        # Extract cryptographic algorithms
+        cryptos_in_entry = entry.get("cryptography", [])
+        for crypto_info in cryptos_in_entry:
+            algorithm = crypto_info.get("algorithm", "Unknown Algorithm")
+            strength = crypto_info.get("strength", "Unknown Strength")
+            crypto_algorithms.append(f"{algorithm} ({strength}-bit)")
+
+        # Extract component metadata
+        provenance = entry.get("health", {}).get("country", "Unknown")
         component_name = entry.get("component", "Unknown Component")
         stars = entry.get("health", {}).get("stars", "N/A")
         forks = entry.get("health", {}).get("forks", "N/A")
@@ -26,10 +36,10 @@ for file_name, file_data in data.items():
         last_updated = entry.get("health", {}).get("last_update", "N/A")
         version = entry.get("version", "N/A")
         author = entry.get("vendor", "N/A")
-        license_name = licenses_in_entry[0].get("name", "Unknown License") if licenses_in_entry else "Unknown License"
-        quality_score = entry.get("quality", [{}])[0].get("score", "N/A")
+        quality_data = entry.get("quality", [])
+        quality_score = quality_data[0].get("score", "N/A") if quality_data else "N/A"
 
-        # Collect component metadata
+        # Collect metadata for components
         components_metadata.append({
             "Component": component_name,
             "Stars": stars,
@@ -39,33 +49,32 @@ for file_name, file_data in data.items():
             "Provenance": provenance,
             "Version": version,
             "Author": author,
-            "License": license_name,
+            "License": licenses_in_entry[0].get("name", "Unknown License") if licenses_in_entry else "Unknown License",
             "Quality Score": quality_score
         })
 
-        # Collect license and cryptographic algorithm data
-        for license_info in licenses_in_entry:
-            licenses.append(license_info.get("name", "Unknown License"))
-        for crypto_info in cryptos_in_entry:
-            crypto_algorithms.append(crypto_info.get("algorithm", "Unknown Algorithm"))
+# Create DataFrames
+license_df = pd.DataFrame({"License": licenses})
+crypto_df = pd.DataFrame({"Algorithm": crypto_algorithms})
+components_df = pd.DataFrame(components_metadata)
 
-# Create summaries
-license_summary = Counter(licenses).most_common(10)
-crypto_summary = Counter(crypto_algorithms).most_common(10)
-provenance_summary = Counter(provenance_data).items()
+# Generate summaries
+license_summary = license_df["License"].value_counts().head(10).reset_index().values
+crypto_summary = crypto_df["Algorithm"].value_counts().head(10).reset_index().values
+provenance_summary = Counter(entry.get("health", {}).get("country", "Unknown") for entry in data.get("components", [])).items()
 
-# Format as Markdown
+# Markdown sections
 license_md = tabulate(license_summary, headers=["License", "Count"], tablefmt="github")
 crypto_md = tabulate(crypto_summary, headers=["Algorithm", "Count"], tablefmt="github")
-components_md = tabulate(components_metadata, headers="keys", tablefmt="github")
+components_md = tabulate(components_df.head(10), headers="keys", tablefmt="github")
 
-# Generate Markdown report
+# Generate Markdown summary
 with open("summary.md", "w") as f:
     f.write("# SCANOSS SBOM Dashboard 📊\n\n")
     f.write("## License Distribution (Top 10)\n")
     f.write(license_md + "\n\n")
     f.write("## Cryptographic Algorithm Usage (Top 10)\n")
-    f.write(crypto_md if crypto_summary else "No cryptographic data available.\n")
+    f.write(crypto_md if not crypto_df.empty else "No cryptographic data available.\n")
     f.write("\n\n## Repository Component Metadata\n")
     f.write(components_md + "\n\n")
     f.write("### Provenance Summary:\n")
