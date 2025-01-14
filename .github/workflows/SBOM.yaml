@@ -20,11 +20,10 @@ jobs:
       - name: Generate SBOM using SCANOSS Docker
         run: |
           docker pull ghcr.io/scanoss/scanoss-py:v1.19.0
-          docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ --key txnUfW0xwF0KI1U1RW5sDSBL -o results.json
+          docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ --key ${{ secrets.SCANOSS_API_KEY }} -o results.json
           
-
       - name: Upload SBOM as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: scanoss-results
           path: ./results.json
@@ -38,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download SBOM Result
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: scanoss-results
           path: ./  # Download to root
@@ -46,16 +45,30 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install plotly matplotlib kaleido pandas tabulate
-      
+          pip install pandas tabulate
+
       # Step: Run the SBOM vulnerability scan script
       - name: Run Vulnerability Scan Script
-        run: python scripts/vulncheck.py
-
-      - name: Generate Charts and Results Summary
         run: |
-          mkdir -p charts
-          python scripts/generate_charts.py
+          mkdir -p reports
+          python scripts/scan_repo_vulnerabilities.py
 
-      - name: Display Results and Charts in Workflow Summary
-        run: cat summary.md vulnerabilities_summary.md >> $GITHUB_STEP_SUMMARY
+      - name: Upload Vulnerability Report as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vulnerabilities-report
+          path: vulnerabilities_summary.md
+
+      # Upload entire repository scan results
+      - name: Upload All SBOM and Report Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-sbom-reports
+          path: |
+            ./results.json
+            ./vulnerabilities_summary.md
+            ./reports/
+
+      # Step to display summary in GitHub Actions UI
+      - name: Display Results in Summary
+        run: cat vulnerabilities_summary.md >> $GITHUB_STEP_SUMMARY
