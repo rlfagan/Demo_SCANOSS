@@ -58,4 +58,4 @@ jobs:
           python scripts/generate_charts.py
 
       - name: Display Results and Charts in Workflow Summary
-        run: cat summary.md >> $GITHUB_STEP_SUMMARY
+        run: cat summary.md vulnerabilities_summary.md >> $GITHUB_STEP_SUMMARY
