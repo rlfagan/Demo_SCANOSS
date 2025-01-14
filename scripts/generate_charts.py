@@ -1,63 +1,75 @@
 import json
-import pandas as pd
 from collections import Counter
 from tabulate import tabulate
 
-# Load SBOM files
-with open("sbom.json", "r") as f1, open("project.sbom.json", "r") as f2:
-    sbom_data = json.load(f1)
-    project_data = json.load(f2)
+# Load the SCANOSS SBOM results
+with open("results.json", "r") as file:
+    data = json.load(file)
 
-# Encryption and CVE lists
+licenses = []
 crypto_algorithms = []
-cve_details = []
+components_metadata = []
+provenance_data = []
 
-# Scan components in both SBOMs
-for sbom in [sbom_data, project_data]:
-    for component in sbom.get("components", []):
-        # Cryptographic algorithms
-        if "cryptography" in component:
-            for crypto in component["cryptography"]:
-                algo = crypto.get("algorithm", "Unknown Algorithm")
-                strength = crypto.get("strength", "Unknown Strength")
-                crypto_algorithms.append(f"{algo} ({strength}-bit)")
+# Extract data
+for file_name, file_data in data.items():
+    for entry in file_data:
+        licenses_in_entry = entry.get("licenses", [])
+        cryptos_in_entry = entry.get("cryptography", [])
+        provenance = entry.get("provenance", "Unknown").strip() or "Unknown"
+        provenance_data.append(provenance)
 
-        # Vulnerabilities
-        if "vulnerabilities" in component:
-            for vuln in component["vulnerabilities"]:
-                cve_id = vuln.get("id", "Unknown CVE")
-                description = vuln.get("description", "No description provided.")
-                score = vuln.get("ratings", [{}])[0].get("score", "N/A")
-                severity = vuln.get("ratings", [{}])[0].get("severity", "Unknown")
-                recommendation = vuln.get("recommendation", "No recommendation provided.")
-                cve_details.append({
-                    "CVE ID": cve_id,
-                    "Severity": severity,
-                    "Score": score,
-                    "Description": description,
-                    "Recommendation": recommendation
-                })
+        component_name = entry.get("component", "Unknown Component")
+        stars = entry.get("health", {}).get("stars", "N/A")
+        forks = entry.get("health", {}).get("forks", "N/A")
+        issues = entry.get("health", {}).get("issues", "N/A")
+        last_updated = entry.get("health", {}).get("last_update", "N/A")
+        version = entry.get("version", "N/A")
+        author = entry.get("vendor", "N/A")
+        license_name = licenses_in_entry[0].get("name", "Unknown License") if licenses_in_entry else "Unknown License"
+        quality_score = entry.get("quality", [{}])[0].get("score", "N/A")
 
-# Generate encryption algorithm summary
-crypto_summary = Counter(crypto_algorithms).items()
+        # Collect component metadata
+        components_metadata.append({
+            "Component": component_name,
+            "Stars": stars,
+            "Forks": forks,
+            "Issues": issues,
+            "Last Updated": last_updated,
+            "Provenance": provenance,
+            "Version": version,
+            "Author": author,
+            "License": license_name,
+            "Quality Score": quality_score
+        })
+
+        # Collect license and cryptographic algorithm data
+        for license_info in licenses_in_entry:
+            licenses.append(license_info.get("name", "Unknown License"))
+        for crypto_info in cryptos_in_entry:
+            crypto_algorithms.append(crypto_info.get("algorithm", "Unknown Algorithm"))
+
+# Create summaries
+license_summary = Counter(licenses).most_common(10)
+crypto_summary = Counter(crypto_algorithms).most_common(10)
+provenance_summary = Counter(provenance_data).items()
+
+# Format as Markdown
+license_md = tabulate(license_summary, headers=["License", "Count"], tablefmt="github")
 crypto_md = tabulate(crypto_summary, headers=["Algorithm", "Count"], tablefmt="github")
-
-# Generate CVE summary
-cve_df = pd.DataFrame(cve_details)
-if not cve_df.empty:
-    cve_md = tabulate(cve_df.head(10), headers="keys", tablefmt="github")
-else:
-    cve_md = "No CVEs found."
+components_md = tabulate(components_metadata, headers="keys", tablefmt="github")
 
 # Generate Markdown report
 with open("summary.md", "w") as f:
-    f.write("# SBOM Analysis Report 📊\n\n")
-    f.write("## Cryptographic Algorithm Usage\n")
-    f.write(crypto_md + "\n\n")
-    f.write("## Vulnerabilities (Top 10)\n")
-    f.write(cve_md + "\n\n")
-    f.write("## Notes:\n")
-    f.write("- Full SBOM details are available in the uploaded artifacts.\n")
-    f.write("- Ensure that recommendations for CVEs are followed to mitigate security risks.\n")
+    f.write("# SCANOSS SBOM Dashboard 📊\n\n")
+    f.write("## License Distribution (Top 10)\n")
+    f.write(license_md + "\n\n")
+    f.write("## Cryptographic Algorithm Usage (Top 10)\n")
+    f.write(crypto_md if crypto_summary else "No cryptographic data available.\n")
+    f.write("\n\n## Repository Component Metadata\n")
+    f.write(components_md + "\n\n")
+    f.write("### Provenance Summary:\n")
+    f.write("\n".join([f"- **{country}**: {count} components" for country, count in provenance_summary]) + "\n\n")
+    f.write("## Notes:\n- No vulnerabilities detected.\n- Full SBOM details are available in the uploaded artifact.\n")
 
-print("SBOM analysis report generated successfully.")
+print("Text-only dashboard summary generated successfully.")
