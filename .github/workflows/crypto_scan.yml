@@ -21,6 +21,8 @@ jobs:
         run: |
           docker pull ghcr.io/scanoss/scanoss-py:v1.19.0
           docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ --key txnUfW0xwF0KI1U1RW5sDSBL -o results.json
+          find . -name "*.json" -exec echo "Processing {}" \; -exec jq -c '.components[]?.purl // empty | {purl: .}' {} + | jq -s '{purls: .}' > purls.json
+          
 
       - name: Upload SBOM as Artifact
         uses: actions/upload-artifact@v4
@@ -50,9 +52,7 @@ jobs:
       - name: Install SCANOSS CLI Tool
         run: |
           pip install scanoss
-
-      - name: Run Vulnerability Scan Script
-        run: python scripts/vulncheck.py
+          scanoss-py comp vu -i ./purls.json -o vulnerabilities_summary.md
 
       - name: Generate Charts and Results Summary
         run: |
