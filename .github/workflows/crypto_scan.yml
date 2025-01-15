@@ -21,9 +21,9 @@ jobs:
         run: |
           docker pull ghcr.io/scanoss/scanoss-py:v1.19.0
           docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ --key txnUfW0xwF0KI1U1RW5sDSBL -o results.json
-          
+
       - name: Upload SBOM as Artifact
-        uses: actions/upload-artifact@v4  # Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: scanoss-results
           path: ./results.json
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download SBOM Result
-        uses: actions/download-artifact@v4  # Updated to v4
+        uses: actions/download-artifact@v4
         with:
           name: scanoss-results
           path: ./  # Download to root
@@ -47,7 +47,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas tabulate matplotlib kaleido
 
-      # Run vulnerability scan script
+      - name: Install SCANOSS CLI Tool
+        run: |
+          pip install scanoss
+
       - name: Run Vulnerability Scan Script
         run: python scripts/vulncheck.py
 
