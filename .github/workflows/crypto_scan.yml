@@ -23,7 +23,7 @@ jobs:
           docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ --key txnUfW0xwF0KI1U1RW5sDSBL -o results.json
           
           echo "Extracting PURLs to purls.json..."
-          jq '{purls: [.components[]?.purl // empty | {purl: .}]}' results.json > purls.json
+          jq '[paths | select(.[-1] == "purl") as $path | getpath($path)[] | {purl: .}] | {purls: .}' results.json > purls.json
           echo "PURLs JSON file created with $(jq '.purls | length' purls.json) PURLs."
 
       - name: Upload SBOM and PURLs JSON as Artifacts
