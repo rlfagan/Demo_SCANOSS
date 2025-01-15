@@ -1,86 +1,78 @@
 import os
 import json
-from pathlib import Path
-from tabulate import tabulate
+import subprocess
 
-# Function to determine if a file is SPDX or CycloneDX
-def is_valid_sbom(file_path):
+# Configuration
+SCANOSS_API_KEY = os.getenv('SCANOSS_API_KEY', 'txnUfW0xwF0KI1U1RW5sDSBL')  # Default API key
+JSON_DIR = "./"  # Directory to search for JSON files
+PURL_OUTPUT_FILE = "purls.txt"  # File to store all PURLs
+TIMEOUT = 10  # Timeout for each scan in seconds
+
+
+def get_json_files(directory):
+    """Retrieve all JSON files from the specified directory."""
+    json_files = [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".json")]
+    print(f"Found {len(json_files)} JSON files in directory '{directory}'.")
+    return json_files
+
+
+def extract_purls_from_cyclonedx(json_file):
+    """Extract PURLs from a CycloneDX JSON file."""
+    purls = []
     try:
-        with open(file_path, "r") as file:
-            content = json.load(file)
-        # Check for CycloneDX or SPDX-specific fields
-        if "bomFormat" in content and content["bomFormat"].lower() == "cyclonedx":
-            return "cyclonedx"
-        elif "spdxVersion" in content:
-            return "spdx"
-        else:
-            return None
-    except (json.JSONDecodeError, KeyError):
-        return None  # Invalid or non-SBOM file
+        with open(json_file, 'r') as f:
+            data = json.load(f)
 
-# Function to process vulnerabilities in SBOM files
-def process_vulnerabilities(file_path):
-    with open(file_path, "r") as file:
-        data = json.load(file)
+        components = data.get("components", [])
+        for component in components:
+            if "purl" in component:
+                purls.append(component["purl"])
 
-    vulnerabilities = []
+        print(f"Extracted {len(purls)} PURLs from {json_file}.")
+    except Exception as e:
+        print(f"Error reading JSON file {json_file}: {e}")
+    return purls
 
-    if "components" in data:  # CycloneDX format
-        for component in data["components"]:
-            if "vulnerabilities" in component:
-                for vuln in component["vulnerabilities"]:
-                    vulnerabilities.append({
-                        "File": file_path,
-                        "Component": component.get("name", "Unknown Component"),
-                        "Version": component.get("version", "N/A"),
-                        "CVE ID": vuln.get("id", "Unknown CVE"),
-                        "Severity": vuln.get("ratings", [{}])[0].get("severity", "Unknown"),
-                        "Description": vuln.get("description", "No description available."),
-                        "Recommendation": vuln.get("recommendation", "No recommendation available."),
-                        "Source": vuln.get("source", {}).get("name", "Unknown Source"),
-                        "Link": vuln.get("source", {}).get("url", "No URL provided"),
-                    })
 
-    return vulnerabilities
+def save_purls_to_file(purls):
+    """Save all extracted PURLs to a file."""
+    with open(PURL_OUTPUT_FILE, 'w') as f:
+        for purl in purls:
+            f.write(purl + "\n")
+    print(f"Saved {len(purls)} PURLs to {PURL_OUTPUT_FILE}.")
 
-# Function to scan files in the repository
-def scan_repo_for_vulnerabilities(repo_path):
-    all_vulnerabilities = []
 
-    for root, _, files in os.walk(repo_path):
-        for file_name in files:
-            if file_name.endswith((".json", ".spdx")):
-                file_path = os.path.join(root, file_name)
-                sbom_type = is_valid_sbom(file_path)
-                if sbom_type:
-                    print(f"Processing {sbom_type.upper()} SBOM: {file_path}")
-                    vulnerabilities = process_vulnerabilities(file_path)
-                    if vulnerabilities:
-                        all_vulnerabilities.extend(vulnerabilities)
-                else:
-                    print(f"Skipping invalid SBOM or non-SBOM file: {file_path}")
+def scan_purl(purl):
+    """Scan a single PURL for vulnerabilities."""
+    command = ["scanoss-py", "comp", "vu", "--purl", purl, "--key", SCANOSS_API_KEY]
+    try:
+        print(f"Scanning PURL: {purl}")
+        result = subprocess.run(command, capture_output=True, text=True, check=True, timeout=TIMEOUT)
+        print(f"Results for {purl}:\n{result.stdout}")
+    except subprocess.TimeoutExpired:
+        print(f"Timeout: Scan for {purl} took too long and was skipped.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error scanning PURL {purl}: {e.stderr}")
 
-    return all_vulnerabilities
 
-# Generate Markdown report
-def generate_vulnerability_report(vulnerabilities, output_file="vulnerabilities_summary.md"):
-    if vulnerabilities:
-        headers = ["File", "Component", "Version", "CVE ID", "Severity", "Description", "Recommendation", "Source", "Link"]
-        vulnerability_table = tabulate(vulnerabilities, headers=headers, tablefmt="github")
+def main():
+    """Main function to parse JSON files and scan PURLs."""
+    json_files = get_json_files(JSON_DIR)
+    all_purls = []
 
-        with open(output_file, "w") as report:
-            report.write("# SBOM Vulnerabilities Report 📋\n\n")
-            report.write("## Identified Vulnerabilities\n\n")
-            report.write(vulnerability_table + "\n")
-    else:
-        with open(output_file, "w") as report:
-            report.write("# SBOM Vulnerabilities Report 📋\n\n")
-            report.write("No vulnerabilities were detected.\n")
+    for json_file in json_files:
+        purls = extract_purls_from_cyclonedx(json_file)
+        all_purls.extend(purls)
 
-    print(f"Vulnerability report generated: {output_file}")
+    # Save PURLs to a file
+    save_purls_to_file(all_purls)
 
-# Run the script
+    # Scan each PURL for vulnerabilities
+    for purl in all_purls:
+        scan_purl(purl)
+
+    print(f"Finished scanning {len(all_purls)} PURLs from {len(json_files)} JSON files.")
+
+
 if __name__ == "__main__":
-    repo_path = Path(".")  # Current directory
-    vulnerabilities = scan_repo_for_vulnerabilities(repo_path)
-    generate_vulnerability_report(vulnerabilities)
+    main()
