@@ -29,9 +29,6 @@ jobs:
           echo "Extracting PURLs from SBOM to create a single batch JSON file..."
           jq '{purls: [.components[]?.purl // empty | {purl: .}]}' sbom_output/results.json > ./purls.json
           echo "PURLs JSON file created with $(jq '.purls | length' ./purls.json) PURLs."
-
-      - name: Scan All PURLs in a Single Batch
-        run: |
           echo "Scanning all PURLs in batch using scanoss-py..."
           docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 comp vu --input ./purls.json --key txnUfW0xwF0KI1U1RW5sDSBL
           echo "Batch scan completed."
