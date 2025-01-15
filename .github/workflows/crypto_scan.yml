@@ -17,18 +17,25 @@ jobs:
         if: env.DOCKER_AUTH_REQUIRED == 'true'
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Generate SBOM using SCANOSS Docker
+      - name: Generate SBOM and Extract PURLs
         run: |
           docker pull ghcr.io/scanoss/scanoss-py:v1.19.0
           docker run --rm -v $(pwd):/scanoss ghcr.io/scanoss/scanoss-py:v1.19.0 scan ./ --key txnUfW0xwF0KI1U1RW5sDSBL -o results.json
-          find . -name "*.json" -exec echo "Processing {}" \; -exec jq -c '.components[]?.purl // empty | {purl: .}' {} + | jq -s '{purls: .}' > purls.json
           
+          echo "Extracting PURLs to purls.json..."
+          jq '{purls: [.components[]?.purl // empty | {purl: .}]}' results.json > purls.json
+          echo "PURLs JSON file created with $(jq '.purls | length' purls.json) PURLs."
 
-      - name: Upload SBOM as Artifact
+      - name: Upload SBOM and PURLs JSON as Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: scanoss-results
           path: ./results.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: purls-json
+          path: ./purls.json
 
   generate-charts:
     runs-on: ubuntu-latest
@@ -38,21 +45,27 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Download SBOM Result
+      - name: Download SBOM and PURLs JSON
         uses: actions/download-artifact@v4
         with:
           name: scanoss-results
-          path: ./  # Download to root
+          path: ./
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: purls-json
+          path: ./
 
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas tabulate matplotlib kaleido
 
-      - name: Install SCANOSS CLI Tool
+      - name: Install SCANOSS CLI Tool and Run Batch Scan
         run: |
           pip install scanoss
-          scanoss-py comp vu -i ./purls.json -o vulnerabilities_summary.md
+          echo "Running SCANOSS vulnerability check..."
+          scanoss-py comp vu --input ./purls.json --output ./vulnerabilities_summary.json
 
       - name: Generate Charts and Results Summary
         run: |
@@ -62,4 +75,6 @@ jobs:
       - name: Display Results and Charts in Workflow Summary
         run: |
           if [ -f summary.md ]; then cat summary.md >> $GITHUB_STEP_SUMMARY; fi
-          if [ -f vulnerabilities_summary.md ]; then cat vulnerabilities_summary.md >> $GITHUB_STEP_SUMMARY; fi
+          if [ -f vulnerabilities_summary.json ]; then
+            jq -r '"## Vulnerabilities Summary\n", (.purls[] | "PURL: " + .purl + ", Vulnerability Count: " + (.vulnerabilities | length | tostring))' vulnerabilities_summary.json >> $GITHUB_STEP_SUMMARY
+          fi
